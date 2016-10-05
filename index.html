@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Neighborhood Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+    <script>
+      var map;
+      var myLatLong = {lat: 30.2672, lng: -97.7431};
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: myLatLong,
+          zoom: 10
+        });
+
+        var marker = new google.maps.Marker({
+            map: map,
+            position: myLatLong,
+            animation: google.maps.Animation.DROP,
+            title: "This is Austin, y'all!"
+        });
+
+        var infowindow = new google.maps.InfoWindow({
+            content: '<p>Marker Location:' + marker.getPosition() + '</p>'
+        });
+
+        google.maps.event.addListener(marker, 'click', function() {
+            infowindow.open(map, marker);
+        });
+
+        //google.maps.event.addDomListener(window, 'load', initialize);
+
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4rZ5Zw-M85ijrXmtikWjrsZgJNKa4ips&callback=initMap" async defer></script>
+    <script src="js/knockout-3.4.0.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+
+</html>
