@@ -4,27 +4,27 @@
 var map;
 var myLatLong = {lat: 30.2672, lng: -97.7431};
 
-function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: myLatLong,
-      zoom: 12
-    });
+// function initMap() {
+//     map = new google.maps.Map(document.getElementById('map'), {
+//       center: myLatLong,
+//       zoom: 12
+//     });
 
-    var marker = new google.maps.Marker({
-        map: map,
-        position: myLatLong,
-        animation: google.maps.Animation.DROP,
-        title: "This is Austin, y'all!"
-    });
+//     var marker = new google.maps.Marker({
+//         map: map,
+//         position: myLatLong,
+//         animation: google.maps.Animation.DROP,
+//         title: "This is Austin, y'all!"
+//     });
 
-    var infowindow = new google.maps.InfoWindow({
-        content: '<p>Marker Location:' + marker.getPosition() + '</p>'
-    });
+//     var infowindow = new google.maps.InfoWindow({
+//         content: '<p>Marker Location:' + marker.getPosition() + '</p>'
+//     });
 
-    google.maps.event.addListener(marker, 'click', function() {
-        infowindow.open(map, marker);
-    });
-}
+//     google.maps.event.addListener(marker, 'click', function() {
+//         infowindow.open(map, marker);
+//     });
+// }
 
 
 // My Markers
@@ -121,14 +121,16 @@ var markerItem = function(data) {
         map: map,
         title: data.title
     });
+
+    this.displayMarker = ko.computed(function() {
+        if(this.show() === true) {
+            this.marker.setMap(map);
+        } else {
+            this.marker.setMap(null);
+        }
+        return true;
+    }, this);
 };
-
-
-
-
-
-
-
 
 
 // View
@@ -136,15 +138,30 @@ var markerItem = function(data) {
 // Initialize the Markers on the Map
 
 function viewModel() {
-
     var self = this;
 
     this.markersList = ko.observableArray([]);
 
-    myMarkers.forEach(function(marker) {
-        self.markersList.push( new markerItem(marker));
-        console.log(marker);
-    })
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: myLatLong,
+        zoom: 12
+    });
+
+    var marker = new google.maps.Marker({
+        map: map,
+        position: myLatLong,
+        animation: google.maps.Animation.DROP,
+        title: "This is Austin, y'all!"
+    });
+
+    // myMarkers.forEach(function(marker) {
+    //     self.markersList.push( new markerItem(marker));
+    //     console.log(marker);
+    // })
+
+        myMarkers.forEach(function(locationItem){
+        self.myMarkers.push( new markerItem(locationItem));
+    });
 
 };
 
