@@ -128,6 +128,7 @@ console.log("ViewModel Start");
             } else {
                 that.url(result.url);
             }
+            that.url(result.url);
             console.log(that.url() + " This is the URL from Foursquare API");
             that.phone(result.contact.formattedPhone);
             console.log(that.phone() + " This is the formatted phone number from Foursquare API");
@@ -144,13 +145,15 @@ console.log("ViewModel Start");
 
         // Google Maps API info window information
         // https://developers.google.com/maps/documentation/javascript/infowindows
-        var contentString = '<div><b>' + this.name() + '</b></div>' +
-                            '<div>'+ this.street() + '</div>' +
-                            '<div>'+ that.phone() + '</div>' +
-                            '<div>'+ this.lat() + '</div>';
+        this.contentString = ko.computed(function() {
+            return  '<div><b>' + that.name() + '</b></div>' +
+                    '<div>'+ that.street() + '</div>' +
+                    '<div>'+ that.phone() + '</div>' +
+                    '<div><a href="' + that.url() + '">' + that.url() + '</a></div>';
+        });
 
-        var infoWindow = new google.maps.InfoWindow({
-            content: contentString
+        this.infoWindow = new google.maps.InfoWindow({
+            content: that.contentString()
         });
 
         this.marker = new google.maps.Marker({
@@ -162,7 +165,8 @@ console.log("ViewModel Start");
         this.marker.setMap(map);
 
         this.marker.addListener('click', function() {
-            infoWindow.open(map, this);
+            that.infoWindow.setContent(that.contentString());
+            that.infoWindow.open(map, this);
         });
     }; // End of Location Constructor Function
 
