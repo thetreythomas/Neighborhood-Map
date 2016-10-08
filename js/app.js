@@ -119,12 +119,11 @@ var Location = function(data) {
         //console.log(data.repsonse.venues[0]);
 
         var result = data.response.venues[0];
+        self.url(result.url);
         if (typeof self.url === 'undefined') {
             self.url("");
-        } else {
-            self.url(result.url);
         }
-        self.url(result.url);
+
         console.log(self.url() + " This is the URL from Foursquare API");
         self.phone(result.contact.formattedPhone);
         console.log(self.phone() + " This is the formatted phone number from Foursquare API");
@@ -165,8 +164,6 @@ var Location = function(data) {
         self.infoWindow.open(map, this);
     });
 }; // End of Location Constructor Function
-
-
 
 
 // ViewModel
