@@ -7,7 +7,7 @@ var myMarkers = [
         street: "2500 McHale Ct.",
         city: "Austin, TX 78758",
         //phone: "(512) 271-5475",
-        url: "https://www.k1speed.com/austin-location.html"
+        //url: "https://www.k1speed.com/austin-location.html"
     },
     {
         name: "Topgolf",
@@ -16,7 +16,7 @@ var myMarkers = [
         street: "2700 Esperanza Crossing",
         city: "Austin, TX 78758",
         //phone: "(512) 222-5950",
-        url: "http://http://topgolf.com/us/austin/"
+        //url: "http://http://topgolf.com/us/austin/"
     },
     {
         name: "Alamo Drafthouse - Village",
@@ -25,7 +25,7 @@ var myMarkers = [
         street: "2700 W Anderson Ln",
         city: "Austin, TX 78757",
         //phone: "(512) 861-7030",
-        url: "https://drafthouse.com/theater/village"
+        //url: "https://drafthouse.com/theater/village"
     },
     {
         name: "The Common Interest - Karaoke Bar & Grill",
@@ -34,7 +34,7 @@ var myMarkers = [
         street: "8400 Burnet Rd",
         city: "Austin, TX 78757",
         //phone: "(512) 453-6796",
-        url: "http://www.ciaustin.com/"
+        //url: "http://www.ciaustin.com/"
     },
     {
         name: "Punch Bowl Social Austin",
@@ -43,7 +43,7 @@ var myMarkers = [
         street: "11310 Domain Dr.",
         city: "Austin, TX 78758",
         //phone: "(512) 368-9070",
-        url: "http://www.punchbowlsocial.com/home"
+        //url: "http://www.punchbowlsocial.com/home"
     },
     {
         name: "Fry's Electronics",
@@ -52,7 +52,7 @@ var myMarkers = [
         street: "12707 N Mopac Expy",
         city: "Austin, TX 78727",
         //phone: "(512) 733-7000",
-        url: "http://www.frys.com/ac/storeinfo/austin-location-frys-electronics-hours-maps-directions"
+        //url: "http://www.frys.com/ac/storeinfo/austin-location-frys-electronics-hours-maps-directions"
     },
     {
         name: "Opal Divine's Marina",
@@ -61,7 +61,7 @@ var myMarkers = [
         street: "12709 N Mopac Expy",
         city: "Austin, TX 78727",
         //phone: "(512) 733-5353",
-        url: "http://www.opaldivines.com/"
+        //url: "http://www.opaldivines.com/"
     },
     {
         name: "Walnut Creek Metroploitian Park",
@@ -70,7 +70,7 @@ var myMarkers = [
         street: "12138 N Lamar Blvd",
         city: "AUstin, TX 78753",
         //phone: "(512) 974-6700",
-        url: "http://www.austintexas.gov/page/park-directory#w"
+        //url: "http://www.austintexas.gov/page/park-directory#w"
     }
 ];
 
@@ -91,9 +91,9 @@ var Location = function(data) {
         console.log(this.street());
     this.city = ko.observable(data.city);
         console.log(this.city());
-    this.phone = ko.observable(""); // Will be retrieved from Foursquare API
+    this.phone = ko.observable(); // Will be retrieved from Foursquare API
         console.log(this.phone());
-    this.url = ko.observable("");  // Will be retrieved from Foursquare API
+    this.url = ko.observable();  // Will be retrieved from Foursquare API
         console.log(this.url());
     this.show = ko.observable(true);
         console.log(this.show());
@@ -120,12 +120,10 @@ var Location = function(data) {
 
         var result = data.response.venues[0];
 
-        if (typeof self.url === 'undefined') {
+        self.url(result.url)
+        if (typeof self.url() === 'undefined') {
             self.url("");
-        } else {
-            self.url(result.url);
         }
-
         console.log(self.url() + " This is the URL from Foursquare API");
         self.phone(result.contact.formattedPhone);
         console.log(self.phone() + " This is the formatted phone number from Foursquare API");
@@ -164,7 +162,20 @@ var Location = function(data) {
     this.marker.addListener('click', function() {
         self.infoWindow.setContent(self.contentString());
         self.infoWindow.open(map, this);
+
+        // https://developers.google.com/maps/documentation/javascript/examples/marker-animations
+        //http://www.w3schools.com/js/js_timing.asp
+        // 2150 milliseconds is 3 bounces
+        self.marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function() {
+            self.marker.setAnimation(null);
+        }, 2150);
     });
+
+    this.animateClick = function(singleListItem) {
+        google.maps.event.trigger(self.marker, 'click');
+    };
+
 }; // End of Location Constructor Function
 
 
@@ -210,15 +221,20 @@ console.log("ViewModel Start");
 function initMap() {
     var self = this;
 
-    map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 30.2672, lng: -97.7431},
-        zoom: 12
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: {lat: 30.390335, lng: -97.703289},
+        zoom: 13
     });
 
     ko.applyBindings(new ViewModel());
 };
 
+// Google Maps Error Handling
+//https://discussions.udacity.com/t/handling-google-maps-in-async-and-fallback/34282#checking-fallback-technique
 
+function googleError() {
+    alert("Google Maps has failed to load for some reason or another. It is not your fault. Grab a beer.")
+}
 
 
 
