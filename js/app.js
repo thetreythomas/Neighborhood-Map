@@ -37,13 +37,13 @@ var myMarkers = [
         url: "http://www.ciaustin.com/"
     },
     {
-        name: "GT Distributors - Gun Store",
-        lat: 30.391606,
-        lng: -97.719653,
-        street: "2545 Brockton Dr. #100",
+        name: "Punch Bowl Social Austin",
+        lat: 30.3999985,
+        lng: -97.725531,
+        street: "11310 Domain Dr.",
         city: "Austin, TX 78758",
-        //phone: "(512) 451-8298",
-        url: "https://www.gtdist.com/"
+        //phone: "(512) 368-9070",
+        url: "http://www.punchbowlsocial.com/home"
     },
     {
         name: "Fry's Electronics",
@@ -119,9 +119,11 @@ var Location = function(data) {
         //console.log(data.repsonse.venues[0]);
 
         var result = data.response.venues[0];
-        self.url(result.url);
+
         if (typeof self.url === 'undefined') {
             self.url("");
+        } else {
+            self.url(result.url);
         }
 
         console.log(self.url() + " This is the URL from Foursquare API");
