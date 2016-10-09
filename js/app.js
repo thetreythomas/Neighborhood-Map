@@ -120,7 +120,7 @@ var Location = function(data) {
         return  '<div><b>' + self.name() + '</b></div>' +
                 '<div>'+ self.street() + '</div>' +
                 '<div>'+ self.phone() + '</div>' +
-                '<div><a href="' + self.url() + '">' + self.url() + '</a></div>';
+                '<div><a href="' + self.url() + '" target="_blank">' + self.url() + '</a></div>';
     });
 
     this.infoWindow = new google.maps.InfoWindow({
