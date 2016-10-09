@@ -80,27 +80,15 @@ var myMarkers = [
 var Location = function(data) {
     var self = this;
 
-    console.log("Location "+data.name+" set");
-    this.name = ko.observable(data.name);
-        console.log(this.name());
-    this.lat = ko.observable(data.lat);
-        console.log(this.lat());
-    this.lng = ko.observable(data.lng);
-        console.log(this.lng());
-    this.street = ko.observable(data.street);
-        console.log(this.street());
-    this.city = ko.observable(data.city);
-        console.log(this.city());
-    this.phone = ko.observable(); // Will be retrieved from Foursquare API
-        console.log(this.phone());
-    this.url = ko.observable();  // Will be retrieved from Foursquare API
-        console.log(this.url());
-    this.show = ko.observable(true);
-        console.log(this.show());
-    //Items added from Foursquare API
-    // this.url = '';
-    //this.facebookName = ko.observable('');
-    //this.categoryName = ko.observable('');
+    self.name = ko.observable(data.name);
+    self.lat = ko.observable(data.lat);
+    self.lng = ko.observable(data.lng);
+    self.street = ko.observable(data.street);
+    self.city = ko.observable(data.city);
+    self.phone = ko.observable(); // Will be retrieved from Foursquare API
+    self.url = ko.observable();  // Will be retrieved from Foursquare API
+    self.show = ko.observable(true);
+
 
     // Foursquare API Information
     var clientID = "D2GUCKJP4VMFZBHN3ZAL3WX2LNFDLARDD4HS5FG3IAJBRV4B";
@@ -108,35 +96,23 @@ var Location = function(data) {
 
     // Foursquare API Call
     // https://developer.foursquare.com/docs/venues/search
-    var foursquareURL = 'https://api.foursquare.com/v2/venues/search?ll='+ this.lat() +
-    ',' + this.lng() + '&client_id=' + clientID + '&client_secret=' + clientSecret +
-    '&v=20160118' + '&query=' + this.name();
-    console.log(foursquareURL);
+    var foursquareURL = 'https://api.foursquare.com/v2/venues/search?ll='+ self.lat() +
+    ',' + self.lng() + '&client_id=' + clientID + '&client_secret=' + clientSecret +
+    '&v=20160118' + '&query=' + self.name();
 
     // .getJSON from each searched location
     // http://api.jquery.com/jquery.getjson/
     $.getJSON(foursquareURL, function(data) {
-        //console.log(data.repsonse.venues[0]);
-
         var result = data.response.venues[0];
 
-        self.url(result.url)
+        self.url(result.url);
         if (typeof self.url() === 'undefined') {
             self.url("");
         }
-        console.log(self.url() + " This is the URL from Foursquare API");
         self.phone(result.contact.formattedPhone);
-        console.log(self.phone() + " This is the formatted phone number from Foursquare API");
-
-        // that.facebookName(result.contact.facebookUsername);
-        // console.log(that.facebookName() + " This is the Facebook Name from Foursquare API")
-        // that.categoryName(result.categories.name);
-        // console.log(that.categoryName() + " This is the Category type from Foursquare API");
-
     }).fail(function (){
         alert("Danger, Will Robinson! Danger!");
     });
-
 
     // Google Maps API info window information
     // https://developers.google.com/maps/documentation/javascript/infowindows
@@ -165,11 +141,11 @@ var Location = function(data) {
 
         // https://developers.google.com/maps/documentation/javascript/examples/marker-animations
         //http://www.w3schools.com/js/js_timing.asp
-        // 2150 milliseconds is 3 bounces
+        // 700 milliseconds is one full bounce
         self.marker.setAnimation(google.maps.Animation.BOUNCE);
         setTimeout(function() {
             self.marker.setAnimation(null);
-        }, 2150);
+        }, 1400);
     });
 
     this.animateClick = function(singleListItem) {
@@ -182,14 +158,11 @@ var Location = function(data) {
 // ViewModel
 
 function ViewModel () {
-console.log("ViewModel Start");
-
     var self = this;
 
     this.markerList = ko.observableArray();
 
     myMarkers.forEach(function(e){
-        console.log('Starting the creation of '+ e.name);
         self.markerList.push(new Location(e));
     });
 
@@ -207,9 +180,11 @@ console.log("ViewModel Start");
             return ko.utils.arrayFilter(self.markerList(), function(markerItem) {
                 if(markerItem.name().toLowerCase().indexOf(filter) >= 0) {
                     markerItem.show(true);
+                    markerItem.marker.setVisible(true);
                     return true;
                 } else {
                     markerItem.show(false);
+                    markerItem.marker.setVisible(false);
                     return false;
                 }
             });
@@ -235,12 +210,3 @@ function initMap() {
 function googleError() {
     alert("Google Maps has failed to load for some reason or another. It is not your fault. Grab a beer.")
 }
-
-
-
-
-
-
-
-
-
